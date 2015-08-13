@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Shiny App</title>
+  <meta charset="utf-8">
+  <meta name="description" content="My Shiny App">
+  <meta name="author" content="Asier">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="./assets/css/ribbons.css"></link>
+
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>My Shiny App</h1>
+    <h2>The Gaussian plot</h2>
+    <p>Asier<br/></p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>The idea</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>To plot a Gaussian function with the desired mean and sd values, together with two lines plotting the position of the first sd (not shown). </p>
+
+<pre><code class="r">x   &lt;- seq(-10,10,length=2000)
+y   &lt;- dnorm(x,mean=0, sd=2)                
+plot(x,y, type=&quot;l&quot;, lwd=1, col=&#39;lightblue&#39;,main=&#39;Gaussian Function&#39;)                      
+</code></pre>
+
+<p><img src="assets/fig/unnamed-chunk-1-1.png" alt="plot of chunk unnamed-chunk-1"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>The Code:server.R</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">shinyServer(
+        function(input, output) {
+                output$text1 &lt;- renderText({input$text1})
+                output$text2 &lt;- renderText({input$sdin})
+                output$newgauss &lt;- renderPlot({
+                        x   &lt;- seq(-10,10,length=2000)
+                        meanin&lt;-input$text1
+                        sdin&lt;-input$sdin
+                        meanin&lt;-as.numeric(meanin)
+                        sdin&lt;-as.numeric(sdin)
+                        y   &lt;- dnorm(x,mean=meanin, sd=sdin)
+                        plot(x,y, type=&quot;l&quot;, lwd=1, col=&#39;lightblue&#39;,main=&#39;Gaussian Function&#39;)
+
+                        lines(c(meanin+sdin, meanin+sdin), c(0, 200),col=&quot;red&quot;,lwd=5)
+                        lines(c(meanin-sdin, meanin-sdin), c(0, 200),col=&quot;red&quot;,lwd=5)                                        
+                })
+
+        }
+)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>The Code:ui.R</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">        headerPanel(&quot;Gaussian plot&quot;),
+        sidebarPanel(
+                textInput(inputId=&quot;text1&quot;, label = &quot;Value of the mean&quot;),
+                sliderInput(&#39;sdin&#39;, &#39;Value of the standard deviation&#39;,value = 1, min = 0.01, max = 5, step = 0.05,)
+        ),
+        mainPanel(
+                p(&#39;Value of the mean (between 10 and -10)&#39;),
+                textOutput(&#39;text1&#39;),
+                p(&#39;Value of the standard deviation&#39;),
+                textOutput(&#39;text2&#39;),
+                plotOutput(&#39;newgauss&#39;)
+        )
+))
+</code></pre>
+
+<p>-The two inputs correspond to a slider and a text input. The output returns the inserted values and the plot.</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Conclusion</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>-No explanation was provided in previous slides due to lack of space.</p>
+
+<p>-The App requires two valid numeric values to plot the figure. </p>
+
+<p>-It plots a Gaussian curve with the desired value of mean (from -10 to 10) and sd. Together with two lines indicating the position of the first standard deviation. </p>
+
+<p>-The app allows to understand how the curve changes as we vary the different parameters.</p>
+
+<p>-Enjoy and have a great day! ;)</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='The idea'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='The Code:server.R'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='The Code:ui.R'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='Conclusion'>
+         4
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=5 title='NA'>
+         5
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>
